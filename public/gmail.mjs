@@ -1,4 +1,6 @@
 import * as config from '../config.mjs';
+import Message from './message.type.mjs';
+import { default as messagesStore } from './messages.mjs';
 
 // Discovery doc URL for APIs used by the quickstart
 const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest';
@@ -24,6 +26,10 @@ export function handleLogin() {
         // Skip display of account chooser and consent dialog for an existing session.
         tokenClient.requestAccessToken({ prompt: '' });
     }
+
+    tokenClient.callback = function () {
+        listMessages();
+    }
 }
 
 /**
@@ -35,19 +41,27 @@ async function listMessages() {
     try {
         response = await gapi.client.gmail.users.messages.list({
             'userId': 'me',
+            maxResults: 500,
         });
     } catch (err) {
         document.getElementById('content').innerText = err.message;
         return;
     }
-    const messages = response.result.messages;
+    let messages = response.result.messages;
     if (!messages || messages.length == 0) {
         document.getElementById('content').innerText = 'No messages found.';
         return;
     }
-    // Flatten to string to display
-    const output = messages.reduce(
-        (str, label) => `${str}${label.name}\n`,
-        'messages:\n');
-    document.getElementById('content').innerText = output;
+
+    let responses = messages.map(message => gapi.client.gmail.users.messages.get({
+        userId: 'me',
+        id: message.id,
+        format: 'metadata'
+    }).then(response => response.result));
+
+    messages = await Promise.all(responses);
+    console.log(...messages);
+    messages = messages.map(m => new Message(m));
+
+    messagesStore.bulkPut(messages);
 }
