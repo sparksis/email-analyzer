@@ -1,3 +1,4 @@
+import { faker } from 'https://cdn.skypack.dev/@faker-js/faker';
 import { default as messages, db, findUniqueDomains } from "./messages.mjs";
 
 
@@ -18,26 +19,28 @@ describe('storage', function () {
             request.onerror = reject;
         })
     });
-    it('will run', function () { });
+    describe('sanity check', function () {
+        it('will run', function () { });
 
-    // Just validating the library.
-    describe('db', function () {
-        it('should be accessable', async function () {
-            db.should.exist;
+        // Just validating the library.
+        describe('db', function () {
+            it('should be accessable', async function () {
+                db.should.exist;
+            });
+            it('should be a mutable db', async function () {
+                await db.messages.bulkPut(messagesFixture);
+            });
         });
-        it('should be a mutable db', async function () {
-            await db.messages.bulkPut(messagesFixture);
-        });
-    });
 
-    describe('bulkPut', function () {
-        it('should be able to store some messages', async function () {
-            try {
-                await messages.bulkPut(messagesFixture);
-            } catch (error) {
-                throw error;
-            }
-        })
+        describe('bulkPut', function () {
+            it('should be able to store some messages', async function () {
+                try {
+                    await messages.bulkPut(messagesFixture);
+                } catch (error) {
+                    throw error;
+                }
+            })
+        });
     });
 
     describe('findUniqueDomains', function () {
@@ -59,4 +62,5 @@ describe('storage', function () {
             uniqueDomains.should.include.all.members(domains);
         });
     });
+
 });
