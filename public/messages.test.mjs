@@ -34,11 +34,7 @@ describe('storage', function () {
 
         describe('bulkPut', function () {
             it('should be able to store some messages', async function () {
-                try {
-                    await messages.bulkPut(messagesFixture);
-                } catch (error) {
-                    throw error;
-                }
+                await messages.bulkPut(messagesFixture);
             })
         });
     });
@@ -63,4 +59,47 @@ describe('storage', function () {
         });
     });
 
+    describe.skip('high data test', async function () {
+        this.timeout(0);
+
+        const DESIRED_VOLUME = 30_000_000;
+        // const DESIRED_VOLUME = 300_000_000;
+        const domains = new Array(300).fill(true).map(() => faker.internet.domainName());
+        before('Open database', function () {
+            db.open();
+        });
+        before('fill the database', async function () {
+            let toInsert = [];
+
+            let timeout = Date.now() + 20_000;
+            let i;
+            for (i = 0; i < DESIRED_VOLUME && Date.now() < timeout; i++) {
+                toInsert.push({
+                    id: `${i}`,
+                    from: faker.internet.email(null, null, domains[Math.floor(Math.random() * 300)])
+                });
+                if (toInsert.length == 300) {
+                    await messages.bulkPut(toInsert);
+                    toInsert = [];
+                    console.log('Inserted:', i);
+                }
+            }
+            console.log(`Create ${i} messages!`);
+        });
+        it('should have a lot of messages', async function () {
+            const count = await messages.count();
+            count.should.be.above(300_000);
+        });
+        it(`it should have ${DESIRED_VOLUME} messages`, async function () {
+            const count = await messages.count();
+            count.should.be.above(DESIRED_VOLUME);
+        });
+        it('should have exactly 300 unique domains', async function () {
+            const uniqueDomains = await findUniqueDomains();
+            uniqueDomains.should.have.lengthOf(300);
+        });
+        after('Close DB', function () {
+            db.close();
+        });
+    });
 });
