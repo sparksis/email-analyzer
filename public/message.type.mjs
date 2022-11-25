@@ -1,3 +1,5 @@
+// import { Address } from 'https://unpkg.com/address-rfc2822@2.1.0/index.js'
+
 class Headers {
     from;
     to;
@@ -20,7 +22,18 @@ export default class Message {
 
         const headers = new Headers(payload.headers);
         this.from = headers.from;
+        this.domain = this.parseDomain();
         this.to = headers.to;
         this.subject = headers.subject;
+    }
+
+    parseDomain() {
+        try {
+            const matches = this.from.match(/.*\<(.*)\>$/);
+            const emailAddress = matches[1] || matches[0];
+            return emailAddress.substring(emailAddress.lastIndexOf('@') + 1);
+        } catch (e) {
+            return console.error('failed to parse domain for', this.from, e);
+        }
     }
 }

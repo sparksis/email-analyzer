@@ -1,7 +1,7 @@
 export const db = new Dexie('EmailDB');
 
 db.version(1).stores({
-    messages: 'id, from, recieved',
+    messages: 'id, from, sent, domain',
 });
 
 export async function findUniqueDomains() {

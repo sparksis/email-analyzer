@@ -60,7 +60,6 @@ async function listMessages() {
     }).then(response => response.result));
 
     messages = await Promise.all(responses);
-    console.log(...messages);
     messages = messages.map(m => new Message(m));
 
     messagesStore.bulkPut(messages);
