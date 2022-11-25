@@ -1,4 +1,15 @@
-// import { Address } from 'https://unpkg.com/address-rfc2822@2.1.0/index.js'
+function extractInternetAddress(address) {
+    const matches = address.match(/.*\<(.*)\>$/);
+    const internetAddress = matches && matches[1] || address;
+    return internetAddress.toLowerCase();
+}
+function parseDomain(internetAddress) {
+    try {
+        return internetAddress.substring(internetAddress.lastIndexOf('@') + 1);
+    } catch (e) {
+        return console.error('failed to parse domain for', this.from, e);
+    }
+}
 
 class Headers {
     from;
@@ -21,19 +32,10 @@ export default class Message {
         this.recieved = internalDate;
 
         const headers = new Headers(payload.headers);
-        this.from = headers.from;
-        this.domain = this.parseDomain();
-        this.to = headers.to;
+        this.from = extractInternetAddress(headers.from);
+        this.domain = parseDomain(this.from);
+        this.to = extractInternetAddress(headers.to);
         this.subject = headers.subject;
     }
 
-    parseDomain() {
-        try {
-            const matches = this.from.match(/.*\<(.*)\>$/);
-            const emailAddress = matches && matches[1] || this.from;
-            return emailAddress.substring(emailAddress.lastIndexOf('@') + 1);
-        } catch (e) {
-            return console.error('failed to parse domain for', this.from, e);
-        }
-    }
 }
