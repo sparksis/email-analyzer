@@ -30,7 +30,7 @@ export default class Message {
     parseDomain() {
         try {
             const matches = this.from.match(/.*\<(.*)\>$/);
-            const emailAddress = matches[1] || matches[0];
+            const emailAddress = matches && matches[1] || this.from;
             return emailAddress.substring(emailAddress.lastIndexOf('@') + 1);
         } catch (e) {
             return console.error('failed to parse domain for', this.from, e);

@@ -1,11 +1,18 @@
 import { faker } from 'https://cdn.skypack.dev/@faker-js/faker';
+import Message from './message.type.mjs';
 import { default as messages, db, findUniqueDomains } from "./messages.mjs";
 
-
-const messagesFixture = [
-    { id: '1', from: '1@example.net' },
-    { id: '2', from: '2@example.net' },
-];
+function createMessage(domain) {
+    domain = domain || faker.internet.domainName();
+    return new Message({
+        id: faker.database.mongodbObjectId(),
+        payload: {
+            headers: [
+                { name: 'From', value: faker.internet.email(null, null, domain) },
+            ]
+        }
+    })
+}
 
 describe('storage', function () {
     beforeEach('reset the db', function () {
@@ -20,6 +27,7 @@ describe('storage', function () {
         })
     });
     describe('sanity check', function () {
+        const messagesFixture = [createMessage('example.org'), createMessage('example.org')];
         it('will run', function () { });
 
         // Just validating the library.
@@ -41,14 +49,11 @@ describe('storage', function () {
 
     describe('findUniqueDomains', function () {
         const domains = ['example.net', 'example.com'];
-        const emails = ['Django', 'Jeff', 'Tiana']
-            .reduce((acc, name) => {
-                domains.forEach(domain => acc.push(`${name}@${domain}`));
-                return acc;
-            }, []);
+        const emails = new Array(3).fill(true)
+            .flatMap(() => domains.map(createMessage));
         before('Setup database', async function () {
             await db.open();
-            await messages.bulkPut(emails.map((v, i) => { return { id: i, from: v } }));
+            await messages.bulkPut(emails);
         });
         after('Close Database', async function () {
             await db.close();
@@ -59,7 +64,7 @@ describe('storage', function () {
         });
     });
 
-    describe.skip('high data test', async function () {
+    describe('high data test', async function () {
         this.timeout(0);
 
         const DESIRED_VOLUME = 30_000_000;
@@ -74,10 +79,7 @@ describe('storage', function () {
             let timeout = Date.now() + 20_000;
             let i;
             for (i = 0; i < DESIRED_VOLUME && Date.now() < timeout; i++) {
-                toInsert.push({
-                    id: `${i}`,
-                    from: faker.internet.email(null, null, domains[Math.floor(Math.random() * 300)])
-                });
+                toInsert.push(createMessage(domains[Math.floor(Math.random() * 300)]));
                 if (toInsert.length == 300) {
                     await messages.bulkPut(toInsert);
                     toInsert = [];
