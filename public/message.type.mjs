@@ -34,7 +34,11 @@ export default class Message {
         const headers = new Headers(payload.headers);
         this.from = extractInternetAddress(headers.from);
         this.domain = parseDomain(this.from);
-        this.to = extractInternetAddress(headers.to);
+        if (headers["delivered-to"]) {
+            this.to = extractInternetAddress(headers["delivered-to"]);
+        } else {
+            this.to = extractInternetAddress(headers.to);
+        }
         this.subject = headers.subject;
     }
 
