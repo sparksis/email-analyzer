@@ -6,6 +6,11 @@
     <title>Hello World</title>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dexie/3.2.2/dexie.js" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
 
     <!-- Don't use this in production: -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -15,8 +20,12 @@
 </head>
 
 <body>
+    <div id="content"></div>
     <div id="root"></div>
-    <script type="text/babel">//jsx
+    <script type="text/babel" data-type="module">//jsx
+        import { default as messages } from './public/messages.mjs';
+        import { handleLogin } from './public/gmail.mjs';
+
 
         //function is the component
         function MyApp() {
@@ -24,7 +33,7 @@
         }
 
         function GoogleLogin() {
-            return alert("Hello 🌍");
+            handleLogin();
         }
 
         function LoginButton() {

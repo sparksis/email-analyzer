@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Tree Map</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <script src="https://unpkg.com/d3"></script>
+    <script src="https://unpkg.com/treemap-chart"></script>
+    <script src="https://unpkg.com/dexie@3.2.2/dist/dexie.js"></script>
+    <style>
+        #root {
+            width: 1vw;
+            height: 1vh;
+            margin: 0px 0px 0px 0px;
+            overflow: hidden;
+        }
+
+    </style>
+</head>
+
+<body id="root">
+    <div></div>
+    <script type="module">
+        import { generateStats } from './public/messages.mjs';
+
+        const stats = await generateStats();
+        const data = {
+            name: 'root',
+            children: toTreemapData(stats),
+        }
+
+        function toTreemapData(obj) {
+            let children = [];
+            for (let k in obj) {
+                if (k === '_count') { continue; }
+                else if (Number.isSafeInteger(obj[k])) {
+                    children.push({ name: k, value: obj[k] });
+                } else {
+                    children.push({ name: k, children: toTreemapData(obj[k]) });
+                }
+            }
+            return children;
+        }
+        console.log(stats, data);
+        const color = d3.scaleOrdinal(d3.schemePaired);
+        const myChart = Treemap();
+        myChart
+            .excludeRoot(true)
+            .color(d => color(d.name))
+            .tooltipContent((d, node) => `Size: <i>${node.value}</i>`)
+            // .tooltipContent((d, node) => ` Count: <u>${node.value}</u> `)
+            // .padding(20)
+            // .size('Count')
+            .data(data)(document.getElementById('root'));
+    </script>
+</body>
+
+</html>
