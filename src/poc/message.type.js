@@ -1,6 +1,7 @@
 function extractInternetAddress(address) {
+    // eslint-disable-next-line
     const matches = address.match(/.*\<(.*)\>$/);
-    const internetAddress = matches && matches[1] || address;
+    const internetAddress = (matches && matches[1]) || address;
     return internetAddress.toLowerCase();
 }
 function parseDomain(internetAddress) {

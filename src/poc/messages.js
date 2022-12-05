@@ -26,15 +26,15 @@ export async function generateStats() {
 
     await db.messages.orderBy('[to+domain+from]').eachKey(function (key) {
         // console.log(...key);
-        if (key[TO] != lastSeen[TO]) {
+        if (key[TO] !== lastSeen[TO]) {
             lastSeen[TO] = key[TO];
             stats[key[TO]] = { _count: 0 };
         }
-        if (key[DOMAIN] != lastSeen[DOMAIN]) {
+        if (key[DOMAIN] !== lastSeen[DOMAIN]) {
             lastSeen[DOMAIN] = key[DOMAIN];
             stats[key[TO]][key[DOMAIN]] = { _count: 0 };
         }
-        if (key[FROM] != lastSeen[FROM]) {
+        if (key[FROM] !== lastSeen[FROM]) {
             lastSeen[FROM] = key[FROM];
             stats[key[TO]][key[DOMAIN]][key[FROM]] = 0;
         }
