@@ -1,0 +1,20 @@
+.SummaryTable {
+    .Row {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 1em;
+        grid-auto-rows: minmax(100px, auto);
+    }
+    .To {
+        grid-column: 1;
+    }
+    .Domain {
+        grid-column: 2;
+    }
+    .From {
+        grid-column: 3;
+    }
+    .Subject {
+        grid-column: 4 / 6;
+    }
+}

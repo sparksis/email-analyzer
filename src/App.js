@@ -1,25 +1,16 @@
-import logo from './logo.svg';
 import './App.css';
-import {handleLogin} from './poc/gmail.js'
+import Login from './components/Login';
+import SummaryTable from './components/SummaryTable';
+import SyncStatus from './components/SyncStatus';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo"  />
-        <button type='button' onClick={handleLogin}  >Login</button>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <Login />
+        <SyncStatus />
       </header>
+      <SummaryTable />
     </div>
   );
 }
