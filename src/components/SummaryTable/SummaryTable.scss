@@ -15,11 +15,27 @@ div {
         content: '├';
         // grid-column: 2;
     }
+
+    .Domain:last-child {
+        &::before {
+            content: '└';
+        }
+
+        .From:last-child::before {
+            content: ' └';
+        }
+    }
+
     .From::before {
         content: '|├'
-        // margin-left: 3em;
-        // grid-column: 3;
+            // margin-left: 3em;
+            // grid-column: 3;
     }
+
+    .From:last-child::before {
+        content: '|└';
+    }
+
     .Subject {
         margin-left: 4em;
         // grid-column: 4 / 6;

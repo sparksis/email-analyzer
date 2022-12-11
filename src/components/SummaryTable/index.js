@@ -37,6 +37,7 @@ export default class SummaryTable extends Component {
 
     renderNode(node, types, value) {
         const type = types[0];
+        const children = Object.keys(node).reduce((prev, value) => prev.concat(this.renderNode(node[value], types.slice(1), value)), [])
         let nodeComponent = null;
         if (value && value !== '_count') {
             let text = value;
@@ -46,10 +47,9 @@ export default class SummaryTable extends Component {
             } else {
                 text += ` (${node})`
             }
-            nodeComponent = <div className={type}>{text}</div>;
+            nodeComponent = <div className={type}>{text}{children}</div>;
         }
-        const children = Object.keys(node).reduce((prev, value) => prev.concat(this.renderNode(node[value], types.slice(1), value)), [])
-        return [nodeComponent, ...children];
+        return nodeComponent || children;
     }
 
     render() {
