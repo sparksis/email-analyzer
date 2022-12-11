@@ -53,6 +53,7 @@ export default class SummaryTable extends Component {
         const link = `https://mail.google.com/mail/u/#search/${encodeURIComponent(query)}`
         return <span><a target='gmail' href={link}>{key.key}</a> ({key.count})</span>;
     }
+    renderDomain = this.renderFrom;
 
     render() {
         return <pre className='SummaryTree' style={{ fontFamily: "Cascadia Code" }}>{this.state.view}</pre>;
