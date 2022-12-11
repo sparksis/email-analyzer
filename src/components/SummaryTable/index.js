@@ -33,14 +33,29 @@ export default class SummaryTable extends Component {
     renderNode(types, node) {
         const type = types[0];
         const element = [...node.entries()].map(function ([key, value]) {
-            return <div key={key.key} className={type}><span>{key.key} ({key.count})</span>{this.renderNode(types.slice(1), value)}</div>
+            let keyElement;
+            if (this['render' + type]) {
+                keyElement = this['render' + type](key);
+            } else {
+                keyElement = this.renderUnknownKey(key);
+            }
+            return <div key={key.key} className={type}>{keyElement}{this.renderNode(types.slice(1), value)}</div>
         }.bind(this));
 
         return element;
     }
 
+    renderUnknownKey(key) {
+        return <span>{key.key} ({key.count})</span>;
+    }
+    renderFrom(key) {
+        const query = `from: ${key.key}`;
+        const link = `https://mail.google.com/mail/u/#search/${encodeURIComponent(query)}`
+        return <span><a target='gmail' href={link}>{key.key}</a> ({key.count})</span>;
+    }
+
     render() {
-        return <pre style={{ fontFamily: "Cascadia Code" }}>{this.state.view}</pre>;
+        return <pre className='SummaryTree' style={{ fontFamily: "Cascadia Code" }}>{this.state.view}</pre>;
     }
 
 }

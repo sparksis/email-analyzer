@@ -1,6 +1,20 @@
 @import "~@fontsource/cascadia-code/index.css"; // Weight 400.
 
-div {
+.SummaryTree {
+    a {
+        color: white;
+
+        &:visited {
+            text-decoration-line: line-through;
+            text-decoration-color: red;
+            text-decoration-style: wavy;
+        }
+
+        &:active {
+            background-color: yellow;
+        }
+    }
+
     .To {
         margin-left: 0em;
 
@@ -16,9 +30,10 @@ div {
                 }
 
                 .From {
-                    &::before{
+                    &::before {
                         content: ' ├'
                     }
+
                     &:last-child {
                         &::before {
                             content: ' └';
