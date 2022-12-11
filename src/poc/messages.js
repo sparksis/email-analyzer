@@ -1,4 +1,5 @@
-import {Dexie} from 'dexie';
+import { Dexie } from 'dexie';
+import { SortedArrayMap } from 'collections/sorted-array-map';
 export const db = new Dexie('EmailDB');
 
 db.version(1).stores({
@@ -17,6 +18,20 @@ export async function findUniqueDomains() {
         }
     });
     return seenDomains;
+}
+
+function toSortedMap(object) {
+    const comparitor = function (l, r) {
+        const lValue = l.count || l;
+        const rValue = r.count || r;
+        return (lValue - rValue) * -1;
+    }
+    const r = new SortedArrayMap([], (l, r) => l.key === r.key, comparitor);
+    for (let key in object) {
+        if (key === '_count') continue;
+        r.add(toSortedMap(object[key]), { key, count: object[key]._count||object[key] });
+    }
+    return r;
 }
 
 export async function generateStats() {
@@ -42,7 +57,7 @@ export async function generateStats() {
         stats[key[TO]][key[DOMAIN]]._count += 1;
         stats[key[TO]][key[DOMAIN]][key[FROM]] += 1;
     });
-    return stats;
+    return toSortedMap(stats);
 }
 
 export default db.messages;

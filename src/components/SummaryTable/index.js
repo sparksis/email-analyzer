@@ -1,4 +1,4 @@
-import { fontStyle } from '@mui/system';
+import { render } from '@testing-library/react';
 import React, { Component } from 'react';
 import { generateStats } from '../../poc/messages';
 import './SummaryTable.scss';
@@ -18,9 +18,6 @@ export default class SummaryTable extends Component {
 
     componentDidMount() {
         this.load();
-        this.interval = setInterval(() => {
-            this.load();
-        }, 200);
     }
 
     componentWillUnmount() {
@@ -29,27 +26,19 @@ export default class SummaryTable extends Component {
 
     async load() {
         const tree = await generateStats();
-        const types = ['Root', 'To', 'Domain', 'From'];
+        const types = ['To', 'Domain', 'From'];
         // const view = Object.keys(tree).reduce((prev, key) => prev + this.renderNode(tree[key], types, key));
-        const view = this.renderNode(tree, types)
+        const view = this.renderNode(types, tree.entries())
         this.setState({ view })
     }
 
-    renderNode(node, types, value) {
+    renderNode(types, node) {
         const type = types[0];
-        const children = Object.keys(node).reduce((prev, value) => prev.concat(this.renderNode(node[value], types.slice(1), value)), [])
-        let nodeComponent = null;
-        if (value && value !== '_count') {
-            let text = value;
-            // if (node[value]) text += node[value]._count;
-            if (node._count) {
-                text += ` (${node._count})`;
-            } else {
-                text += ` (${node})`
-            }
-            nodeComponent = <div className={type}>{text}{children}</div>;
-        }
-        return nodeComponent || children;
+        const element = [...node].map(function ([key, value]) {
+            return <div key={key.key} className={type}><span>{key.key} ({key.count})</span>{this.renderNode(types.slice(1), value.entries())}</div>
+        }.bind(this));
+
+        return element;
     }
 
     render() {
