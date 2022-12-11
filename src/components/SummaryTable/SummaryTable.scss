@@ -1,0 +1,43 @@
+@import "~@fontsource/cascadia-code/index.css"; // Weight 400.
+
+div {
+    .To {
+        margin-left: 0em;
+
+        // grid-column: 1;
+        .Domain {
+            &::before {
+                content: '├';
+            }
+
+            &:last-child {
+                &::before {
+                    content: '└';
+                }
+
+                .From {
+                    &::before{
+                        content: ' ├'
+                    }
+                    &:last-child {
+                        &::before {
+                            content: ' └';
+                        }
+                    }
+                }
+            }
+
+            .From {
+                &::before {
+                    content: '|├'
+
+                }
+
+                &:last-child::before {
+                    content: '|└';
+                }
+            }
+        }
+    }
+
+}
