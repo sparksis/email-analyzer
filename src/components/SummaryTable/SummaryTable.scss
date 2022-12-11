@@ -1,43 +1,43 @@
 @import "~@fontsource/cascadia-code/index.css"; // Weight 400.
 
 div {
-    .Row {
-        display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        gap: 1em;
-        grid-auto-rows: minmax(100px, auto);
-    }
     .To {
         margin-left: 0em;
+
         // grid-column: 1;
-    }
-    .Domain::before {
-        content: '├';
-        // grid-column: 2;
-    }
+        .Domain {
+            &::before {
+                content: '├';
+            }
 
-    .Domain:last-child {
-        &::before {
-            content: '└';
+            &:last-child {
+                &::before {
+                    content: '└';
+                }
+
+                .From {
+                    &::before{
+                        content: ' ├'
+                    }
+                    &:last-child {
+                        &::before {
+                            content: ' └';
+                        }
+                    }
+                }
+            }
+
+            .From {
+                &::before {
+                    content: '|├'
+
+                }
+
+                &:last-child::before {
+                    content: '|└';
+                }
+            }
         }
-
-        .From:last-child::before {
-            content: ' └';
-        }
     }
 
-    .From::before {
-        content: '|├'
-            // margin-left: 3em;
-            // grid-column: 3;
-    }
-
-    .From:last-child::before {
-        content: '|└';
-    }
-
-    .Subject {
-        margin-left: 4em;
-        // grid-column: 4 / 6;
-    }
 }
