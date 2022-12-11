@@ -9,7 +9,7 @@ export function To(props) {
 
 export default class SummaryTable extends Component {
 
-    timeout = null;
+    interval = null;
 
     constructor() {
         super();
@@ -18,13 +18,13 @@ export default class SummaryTable extends Component {
 
     componentDidMount() {
         this.load();
-        this.timeout = setTimeout(() => {
+        this.interval = setInterval(() => {
             this.load();
         }, 200);
     }
 
     componentWillUnmount() {
-        clearTimeout(this.timeout);
+        clearInterval(this.interval);
     }
 
     async load() {
@@ -53,8 +53,7 @@ export default class SummaryTable extends Component {
     }
 
     render() {
-        console.log(this.state);
-        return <pre style={{ fontFamily: "Cascadia Code" }}>{this.state.view}</pre> || <></>;
+        return <pre style={{ fontFamily: "Cascadia Code" }}>{this.state.view}</pre>;
     }
 
 }
