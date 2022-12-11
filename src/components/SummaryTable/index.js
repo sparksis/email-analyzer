@@ -1,11 +1,6 @@
-import { render } from '@testing-library/react';
 import React, { Component } from 'react';
 import { generateStats } from '../../poc/messages';
 import './SummaryTable.scss';
-
-export function To(props) {
-    return <div className='To'></div>
-}
 
 export default class SummaryTable extends Component {
 
