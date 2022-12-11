@@ -1,4 +1,4 @@
-.SummaryTable {
+div {
     .Row {
         display: grid;
         grid-template-columns: repeat(6, 1fr);
@@ -6,15 +6,19 @@
         grid-auto-rows: minmax(100px, auto);
     }
     .To {
-        grid-column: 1;
+        margin-left: 1em;
+        // grid-column: 1;
     }
     .Domain {
-        grid-column: 2;
+        margin-left: 2em;
+        // grid-column: 2;
     }
     .From {
-        grid-column: 3;
+        margin-left: 3em;
+        // grid-column: 3;
     }
     .Subject {
-        grid-column: 4 / 6;
+        margin-left: 4em;
+        // grid-column: 4 / 6;
     }
 }

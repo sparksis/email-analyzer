@@ -2,12 +2,13 @@ import { Button } from "@mui/material"
 import { useState } from "react";
 import { handleLogin } from "../../gmail"
 
-export default function Login() {
-    const [getAuthState, setAuthState] = useState();
+export default function Login({ onSuccess }) {
+    const [authState, setAuthState] = useState();
     async function login() {
         setAuthState({ auth: await handleLogin() });
-        console.log('login result', getAuthState);
+        console.log('login result', authState);
+        onSuccess && onSuccess();
     }
 
-    return !getAuthState && <Button variant="contained" onClick={login}>Login</Button>
+    return !authState && <Button variant="contained" onClick={login}>Login</Button>
 }
