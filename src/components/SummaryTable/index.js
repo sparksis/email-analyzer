@@ -13,6 +13,9 @@ export default class SummaryTable extends Component {
 
     componentDidMount() {
         this.load();
+        setInterval(() => {
+            this.load();
+        }, 200);
     }
 
     componentWillUnmount() {
@@ -23,14 +26,14 @@ export default class SummaryTable extends Component {
         const tree = await generateStats();
         const types = ['To', 'Domain', 'From'];
         // const view = Object.keys(tree).reduce((prev, key) => prev + this.renderNode(tree[key], types, key));
-        const view = this.renderNode(types, tree.entries())
+        const view = this.renderNode(types, tree)
         this.setState({ view })
     }
 
     renderNode(types, node) {
         const type = types[0];
-        const element = [...node].map(function ([key, value]) {
-            return <div key={key.key} className={type}><span>{key.key} ({key.count})</span>{this.renderNode(types.slice(1), value.entries())}</div>
+        const element = [...node.entries()].map(function ([key, value]) {
+            return <div key={key.key} className={type}><span>{key.key} ({key.count})</span>{this.renderNode(types.slice(1), value)}</div>
         }.bind(this));
 
         return element;
