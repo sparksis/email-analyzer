@@ -1,3 +1,4 @@
+import { fontStyle } from '@mui/system';
 import React, { Component } from 'react';
 import { generateStats } from '../../poc/messages';
 import './SummaryTable.scss';
@@ -17,9 +18,13 @@ export default class SummaryTable extends Component {
 
     componentDidMount() {
         this.load();
-        setTimeout(() => {
+        this.timeout = setTimeout(() => {
             this.load();
         }, 200);
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timeout);
     }
 
     async load() {
@@ -32,14 +37,16 @@ export default class SummaryTable extends Component {
 
     renderNode(node, types, value) {
         const type = types[0];
-        let nodeComponent;
+        let nodeComponent = null;
         if (value && value !== '_count') {
             let text = value;
             // if (node[value]) text += node[value]._count;
-            if (node._count) text += ` (${node._count})`
+            if (node._count) {
+                text += ` (${node._count})`;
+            } else {
+                text += ` (${node})`
+            }
             nodeComponent = <div className={type}>{text}</div>;
-        } else {
-            nodeComponent = null;
         }
         const children = Object.keys(node).reduce((prev, value) => prev.concat(this.renderNode(node[value], types.slice(1), value)), [])
         return [nodeComponent, ...children];
@@ -47,7 +54,7 @@ export default class SummaryTable extends Component {
 
     render() {
         console.log(this.state);
-        return <pre>{this.state.view}</pre> || <></>;
+        return <pre style={{ fontFamily: "Cascadia Code" }}>{this.state.view}</pre> || <></>;
     }
 
 }

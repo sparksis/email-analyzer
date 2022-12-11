@@ -1,3 +1,5 @@
+@import "~@fontsource/cascadia-code/index.css"; // Weight 400.
+
 div {
     .Row {
         display: grid;
@@ -6,15 +8,16 @@ div {
         grid-auto-rows: minmax(100px, auto);
     }
     .To {
-        margin-left: 1em;
+        margin-left: 0em;
         // grid-column: 1;
     }
-    .Domain {
-        margin-left: 2em;
+    .Domain::before {
+        content: '├';
         // grid-column: 2;
     }
-    .From {
-        margin-left: 3em;
+    .From::before {
+        content: '|├'
+        // margin-left: 3em;
         // grid-column: 3;
     }
     .Subject {
