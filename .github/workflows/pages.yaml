@@ -38,6 +38,7 @@ jobs:
     - run: npm install
     - run: npm run build --if-present
       env:
+        PUBLIC_URL: 'https://analytical.email/'
         REACT_APP_CLIENT_ID: ${{ secrets.REACT_APP_CLIENT_ID }}
         REACT_APP_CLIENT_SECRET: ${{ secrets.REACT_APP_CLIENT_SECRET }}
     - run: npm test
