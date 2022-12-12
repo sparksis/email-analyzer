@@ -56,7 +56,7 @@ export default class SummaryTable extends Component {
     renderDomain = this.renderFrom;
 
     render() {
-        return <pre className='SummaryTree' style={{ fontFamily: "Cascadia Code" }}>{this.state.view}</pre>;
+        return <div className='SummaryTree' >{this.state.view}</div>;
     }
 
 }

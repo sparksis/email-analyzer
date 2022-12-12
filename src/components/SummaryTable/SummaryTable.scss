@@ -1,6 +1,14 @@
 @import "~@fontsource/cascadia-code/index.css"; // Weight 400.
 
 .SummaryTree {
+    font-family: 'Cascadia Code';
+
+    div {
+        overflow-x: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
     a {
         color: white;
 
