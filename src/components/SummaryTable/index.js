@@ -49,7 +49,7 @@ export default class SummaryTable extends Component {
         return <span>{key.key} ({key.count})</span>;
     }
     renderFrom(key) {
-        const query = `from: ${key.key}`;
+        const query = `from:${key.key}`;
         const link = `https://mail.google.com/mail/u/#search/${encodeURIComponent(query)}`
         return <span><a target='gmail' href={link}>{key.key}</a> ({key.count})</span>;
     }
