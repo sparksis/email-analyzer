@@ -34,7 +34,7 @@ export async function loadMessagesToDb(nextPageToken) {
         response = await gapi.client.gmail.users.messages.list({
             'userId': 'me',
             maxResults: 500,
-            q: '-in:sent',
+            q: '-in:sent in:inbox',
             pageToken: nextPageToken,
         });
     } catch (err) {
