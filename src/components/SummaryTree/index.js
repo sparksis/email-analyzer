@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { generateStats } from '../../poc/messages';
 import './SummaryTable.scss';
 
-export default class SummaryTable extends Component {
+export default class SummaryTree extends Component {
 
     interval = null;
 

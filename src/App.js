@@ -1,6 +1,6 @@
 import './App.css';
 import Login from './components/Login';
-import SummaryTable from './components/SummaryTable';
+import SummaryTable from './components/SummaryTree';
 import SyncStatus from './components/SyncStatus';
 import { loadMessagesToDb } from './gmail';
 
