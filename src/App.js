@@ -1,6 +1,6 @@
 import './App.css';
+import { DetailView } from './components/DetailView';
 import Login from './components/Login';
-import SummaryTable from './components/SummaryTree';
 import SyncStatus from './components/SyncStatus';
 import { loadMessagesToDb } from './gmail';
 
@@ -13,7 +13,7 @@ function App() {
         <Login onSuccess={loadMessagesToDb} />
         <SyncStatus />
       </header>
-      <SummaryTable />
+      <DetailView />
     </div>
   );
 }

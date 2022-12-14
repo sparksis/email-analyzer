@@ -6,6 +6,9 @@ db.version(1).stores({
     messages: 'id, to, domain, from, [to+domain+from]',
 });
 
+const Messages = db.messages;
+export default Messages;
+
 export async function findUniqueDomains() {
     const seenDomains = [];
     console.log('finding domains');
@@ -60,4 +63,3 @@ export async function generateStats() {
     return toSortedMap(stats);
 }
 
-export default db.messages;

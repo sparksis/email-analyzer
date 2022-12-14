@@ -6,16 +6,16 @@ export default class SummaryTree extends Component {
 
     interval = null;
 
-    constructor() {
-        super();
-        this.state = { view: null };
+    constructor(props) {
+        super(props);
+        this.state = { tree: null };
     }
 
     componentDidMount() {
         this.load();
-        setInterval(() => {
-            this.load();
-        }, 200);
+        // setInterval(() => {
+        //     this.load();
+        // }, 200);
     }
 
     componentWillUnmount() {
@@ -24,15 +24,13 @@ export default class SummaryTree extends Component {
 
     async load() {
         const tree = await generateStats();
-        const types = ['To', 'Domain', 'From'];
-        // const view = Object.keys(tree).reduce((prev, key) => prev + this.renderNode(tree[key], types, key));
-        const view = this.renderNode(types, tree)
-        this.setState({ view })
+        this.setState({ tree });
     }
 
     renderNode(types, node) {
         const type = types[0];
         const element = [...node.entries()].map(function ([key, value]) {
+            if (type === 'To' && this.props.filter && this.props.filter !== key.key) return;
             let keyElement;
             if (this['render' + type]) {
                 keyElement = this['render' + type](key);
@@ -56,7 +54,10 @@ export default class SummaryTree extends Component {
     renderDomain = this.renderFrom;
 
     render() {
-        return <div className='SummaryTree' >{this.state.view}</div>;
+        const types = ['To', 'Domain', 'From'];
+        const view = this.state.tree && this.renderNode(types, this.state.tree)
+
+        return <div className='SummaryTree' >{view}</div>;
     }
 
 }
