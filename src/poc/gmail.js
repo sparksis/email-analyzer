@@ -31,7 +31,7 @@ async function createTokenClient() {
  * Print all messages in the authorized user's inbox. If no messages
  * are found an appropriate message is printed.
  */
-async function loadMessagesToDb(nextPageToken) {
+async function loadMessagesToDb(nextPageToken, retryCount = 0) {
     let response;
     try {
         response = await gapi.client.gmail.users.messages.list({
@@ -41,7 +41,13 @@ async function loadMessagesToDb(nextPageToken) {
             pageToken: nextPageToken,
         });
     } catch (err) {
-        document.getElementById('content').innerText = err.message;
+        if (err.status === 429) {
+            const backoffTime = Math.pow(2, retryCount) * 1000;
+            console.log(`Received 429 error. Retrying in ${backoffTime / 1000} seconds...`);
+            setTimeout(() => loadMessagesToDb(nextPageToken, retryCount + 1), backoffTime);
+        } else {
+            document.getElementById('content').innerText = err.message;
+        }
         return;
     }
     let messages = response.result.messages;
@@ -71,7 +77,7 @@ async function loadMessagesToDb(nextPageToken) {
 
     console.log(response.result.nextPageToken, response.result);
 
-    setTimeout(() => loadMessagesToDb(response.result.nextPageToken), 15000);
+    setTimeout(() => loadMessagesToDb(response.result.nextPageToken), 30000);
 }
 
 export async function handleLogin() {
