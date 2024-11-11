@@ -1,0 +1,13 @@
+.DetailView {
+  padding: 1em;
+}
+
+body.light-theme .DetailView {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+body.dark-theme .DetailView {
+  background-color: #252725;
+  color: #ffffff;
+}

@@ -1,14 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-import { pink, lightGreen } from '@mui/material/colors';
+import { pink, lightGreen, blue, grey } from '@mui/material/colors';
 import { createTheme, ThemeProvider } from '@mui/material';
+import { CssBaseline, Button } from '@mui/material';
 
-const theme = createTheme({
+const lightTheme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: blue[500],
+    },
+    secondary: {
+      main: grey[500],
+    },
+    background: '#fff'
+  },
+});
 
+const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
@@ -19,14 +32,30 @@ const theme = createTheme({
     },
     background: '#000'
   },
-})
+});
+
+function ThemedApp() {
+  const [theme, setTheme] = useState('dark');
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === 'dark' ? 'light' : 'dark'));
+  };
+
+  return (
+    <ThemeProvider theme={theme === 'dark' ? darkTheme : lightTheme}>
+      <CssBaseline />
+      <Button onClick={toggleTheme}>
+        Toggle Theme
+      </Button>
+      <App />
+    </ThemeProvider>
+  );
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <App />
-    </ThemeProvider>
+    <ThemedApp />
   </React.StrictMode>
 );
 
