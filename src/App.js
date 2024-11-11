@@ -9,7 +9,7 @@ function App() {
   const [commitHash, setCommitHash] = useState('');
 
   useEffect(() => {
-    fetch('/commit-hash')
+    fetch('/commit-hash.txt')
       .then(response => response.text())
       .then(hash => setCommitHash(hash));
   }, []);
