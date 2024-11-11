@@ -49,3 +49,31 @@ To ensure the application remains lightweight, the following considerations are 
 - Only essential metadata is fetched and stored for each message.
 - The database schema is optimized for efficient querying and storage.
 - The application uses a local database to minimize network requests and improve performance.
+
+## Mock Data Models
+
+### Mock Message
+
+```json
+{
+  "id": "12345",
+  "snippet": "This is a short snippet of the message content.",
+  "received": "1627849200000",
+  "from": "sender@example.com",
+  "domain": "example.com",
+  "to": "recipient@example.com",
+  "subject": "This is the subject of the message"
+}
+```
+
+### Mock Headers
+
+```json
+{
+  "from": "sender@example.com",
+  "to": "recipient@example.com",
+  "sent": "1627849200000",
+  "subject": "This is the subject of the message",
+  "delivered-to": "recipient@example.com"
+}
+```
