@@ -10,5 +10,5 @@ export default function Login({ onSuccess }) {
         onSuccess && onSuccess();
     }
 
-    return !authState && <Button variant="contained" onClick={login}>Login</Button>
+    return !authState && <Button variant="contained" onClick={login} data-testid="login-button">Login</Button>
 }

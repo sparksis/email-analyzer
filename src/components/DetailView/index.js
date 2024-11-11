@@ -18,7 +18,7 @@ export class DetailView extends React.Component {
     }
 
     render() {
-        return <div className="DetailView">
+        return <div className="DetailView" data-testid="detail-view">
             <ToContainer addresses={this.state.toAddresses} onChange={(address) => this.setState({ filter: address })} />
             <SummaryTree filter={this.state.filter} />
         </div>;
