@@ -27,5 +27,5 @@ export default function ToContainer(props) {
     }
     const addresses = props.addresses.map(address => <AddressChip key={address} selected={selected === address} onClick={clickHandler}>{address}</AddressChip>);
 
-    return <Box>{addresses}</Box>;
+    return <Box data-testid="to-container">{addresses}</Box>;
 }

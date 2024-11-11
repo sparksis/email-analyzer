@@ -57,7 +57,7 @@ export default class SummaryTree extends Component {
         const types = ['To', 'Domain', 'From'];
         const view = this.state.tree && this.renderNode(types, this.state.tree)
 
-        return <div className='SummaryTree' >{view}</div>;
+        return <div className='SummaryTree' data-testid="summary-tree">{view}</div>;
     }
 
 }
