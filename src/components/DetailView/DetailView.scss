@@ -1,0 +1,18 @@
+.DetailView {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 1em;
+  box-sizing: border-box;
+}
+
+.ToContainer {
+  flex: 0 1 auto;
+  overflow-y: auto;
+  margin-bottom: 1em;
+}
+
+.SummaryTree {
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
