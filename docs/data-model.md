@@ -7,7 +7,6 @@ This document describes the proposed data model for the email analyzer applicati
 The `Message` class represents an email message. It has the following properties:
 
 - `id`: The unique identifier of the message.
-- `snippet`: A short snippet of the message content.
 - `received`: The timestamp when the message was received.
 - `from`: The email address of the sender.
 - `domain`: The domain of the sender's email address.
@@ -57,7 +56,6 @@ To ensure the application remains lightweight, the following considerations are 
 ```json
 {
   "id": "12345",
-  "snippet": "This is a short snippet of the message content.",
   "received": "1627849200000",
   "from": "sender@example.com",
   "domain": "example.com",
