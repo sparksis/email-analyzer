@@ -10,9 +10,8 @@ This document outlines the architectural goals for the email analyzer applicatio
 
 ## Scalability
 
-- The application should be designed to handle an increasing number of users and emails without significant performance degradation.
-- The application should use scalable technologies and architectures to support future growth and expansion.
-- The application should be able to distribute the workload across multiple instances or devices if needed.
+- The application should be designed to efficiently handle a large volume of email metadata for a single user, ensuring performance does not significantly degrade as the number of analyzed emails increases.
+- The architecture should support efficient local data processing and storage, accommodating future enhancements and features related to email analysis.
 
 ## Performance
 

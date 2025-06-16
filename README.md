@@ -1,3 +1,11 @@
+# About This Project
+
+This project is a web application designed to help users analyze their Gmail account activity. It fetches email metadata (not the full content) and stores it locally in the browser to generate insights about email habits, frequent contacts, and email volume over time. The primary goal is to empower users with a better understanding of their email usage while prioritizing data privacy and security.
+
+For more detailed information about the project, please see the [Project Overview](./docs/project-overview.md).
+
+---
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
