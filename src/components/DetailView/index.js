@@ -2,7 +2,6 @@ import React from "react";
 import messages from "../../poc/messages";
 import SummaryTree from "../SummaryTree";
 import ToContainer from "./ToAddress";
-import './DetailView.scss'
 
 export class DetailView extends React.Component {
 
@@ -18,7 +17,7 @@ export class DetailView extends React.Component {
     }
 
     render() {
-        return <div className="DetailView">
+        return <div className="p-[1em] bg-white text-[#333333] dark:bg-[#252725] dark:text-white">
             <ToContainer addresses={this.state.toAddresses} onChange={(address) => this.setState({ filter: address })} />
             <SummaryTree filter={this.state.filter} />
         </div>;
