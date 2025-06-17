@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { generateStats, getMostFrequentContactsFromDb } from './database';
 
 // Helper function to generate a large number of mock emails
 const generateMockEmails = (count) => {
@@ -33,135 +34,243 @@ const generateMockEmails = (count) => {
 
 // Component to display the email tree visualization
 const EmailTreeVisualization = ({ emails }) => {
-  if (!emails || emails.length === 0) {
+  // Initial check for empty or null emails
+  // Handles: null, empty array, or placeholder SortedArrayMap with empty .data
+  if (!emails ||
+      (Array.isArray(emails) && emails.length === 0) ||
+      (!Array.isArray(emails) && emails.data && emails.data.length === 0)) {
     return <p className="text-gray-500">No emails to display in tree view.</p>;
   }
 
-  // Group emails by domain, then by sender, then by subject, and count occurrences
-  const treeData = emails.reduce((acc, email) => {
-    const { domain, from, subject } = email;
+  if (Array.isArray(emails)) {
+    // Existing logic for mock data (array processing)
+    // Group emails by domain, then by sender, then by subject, and count occurrences
+    const treeData = emails.reduce((acc, email) => {
+      const { domain, from, subject } = email;
 
-    // Initialize domain level if not present
-    if (!acc[domain]) {
-      acc[domain] = {
-        count: 0,
-        senders: {}
-      };
-    }
-    acc[domain].count++; // Increment domain count
+      // Initialize domain level if not present
+      if (!acc[domain]) {
+        acc[domain] = {
+          count: 0,
+          senders: {}
+        };
+      }
+      acc[domain].count++; // Increment domain count
 
-    // Initialize sender level if not present
-    if (!acc[domain].senders[from]) {
-      acc[domain].senders[from] = {
-        count: 0,
-        subjects: {}
-      };
-    }
-    acc[domain].senders[from].count++; // Increment sender count
+      // Initialize sender level if not present
+      if (!acc[domain].senders[from]) {
+        acc[domain].senders[from] = {
+          count: 0,
+          subjects: {}
+        };
+      }
+      acc[domain].senders[from].count++; // Increment sender count
 
-    // Initialize subject level if not present, or increment its count
-    if (!acc[domain].senders[from].subjects[subject]) {
-      acc[domain].senders[from].subjects[subject] = 0;
-    }
-    acc[domain].senders[from].subjects[subject]++; // Increment subject count
+      // Initialize subject level if not present, or increment its count
+      if (!acc[domain].senders[from].subjects[subject]) {
+        acc[domain].senders[from].subjects[subject] = 0;
+      }
+      acc[domain].senders[from].subjects[subject]++; // Increment subject count
 
-    return acc;
-  }, {});
+      return acc;
+    }, {});
 
+    return (
+      <div className="space-y-4">
+        {Object.entries(treeData)
+          .sort(([, domainDataA], [, domainDataB]) => domainDataB.count - domainDataA.count) // Sort domains by count
+          .map(([domain, domainData]) => (
+          <div key={domain} className="border border-purple-300 rounded-lg p-4 bg-purple-50 shadow-sm">
+            <h3 className="text-lg font-semibold text-purple-800 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-600" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-.464 5.535a1 1 0 10-1.414-1.414L9 10.586l-1.121 1.121a1 1 0 101.414 1.414L9 12.414l1.121 1.121z" clipRule="evenodd" />
+              </svg>
+              Domain: <span className="font-normal ml-1">{domain}</span> <span className="text-sm font-bold bg-purple-200 text-purple-800 px-2 rounded-full ml-2">{domainData.count}</span>
+            </h3>
+            <ul className="pl-6 mt-2 space-y-3">
+              {Object.entries(domainData.senders)
+                .sort(([, senderDataA], [, senderDataB]) => senderDataB.count - senderDataA.count) // Sort senders by count
+                .map(([sender, senderData]) => (
+                <li key={sender} className="border-l-2 border-purple-200 pl-4 py-1">
+                  <p className="text-md font-medium text-purple-700 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-purple-500" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zm-6 6a3 3 0 100 6h6a3 3 0 100-6H7z" />
+                    </svg>
+                    Sender: <span className="font-normal ml-1">{sender}</span> <span className="text-xs font-bold bg-purple-100 text-purple-700 px-2 rounded-full ml-2">{senderData.count}</span>
+                  </p>
+                  <ul className="pl-6 mt-1 space-y-1">
+                    {Object.entries(senderData.subjects)
+                      .sort(([, subjectCountA], [, subjectCountB]) => subjectCountB - subjectCountA) // Sort subjects by count
+                      .map(([subject, subjectCount], idx) => (
+                      <li key={idx} className="text-sm text-gray-700 flex items-start"> {/* Using idx as key for subjects */}
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 mt-1 flex-shrink-0 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                        {subject} <span className="text-xs font-semibold text-gray-500 ml-1">({subjectCount})</span>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    );
+  } else {
+    // New logic for SortedArrayMap data from Dexie
+    // `emails` is the top-level SortedArrayMap for domains.
+    // The placeholder SortedArrayMap's getSortedEntries() returns: [{ name, count, children }]
+    return (
+      <div className="space-y-4">
+        {emails.getSortedEntries().map(({ name: domain, count: domainCount, children: sendersMap }) => (
+          <div key={domain} className="border border-purple-300 rounded-lg p-4 bg-purple-50 shadow-sm">
+            <h3 className="text-lg font-semibold text-purple-800 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-600" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-.464 5.535a1 1 0 10-1.414-1.414L9 10.586l-1.121 1.121a1 1 0 101.414 1.414L9 12.414l1.121 1.121z" clipRule="evenodd" />
+              </svg>
+              Domain: <span className="font-normal ml-1">{domain}</span>
+              <span className="text-sm font-bold bg-purple-200 text-purple-800 px-2 rounded-full ml-2">{domainCount}</span>
+            </h3>
+            <ul className="pl-6 mt-2 space-y-3">
+              {sendersMap.getSortedEntries().map(({ name: sender, count: senderCount, children: subjectsMap }) => (
+                <li key={sender} className="border-l-2 border-purple-200 pl-4 py-1">
+                  <p className="text-md font-medium text-purple-700 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-purple-500" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zm-6 6a3 3 0 100 6h6a3 3 0 100-6H7z" />
+                    </svg>
+                    Sender: <span className="font-normal ml-1">{sender}</span>
+                    <span className="text-xs font-bold bg-purple-100 text-purple-700 px-2 rounded-full ml-2">{senderCount}</span>
+                  </p>
+                  <ul className="pl-6 mt-1 space-y-1">
+                    {/* For subjects, `children` from `subjectsMap.getSortedEntries()` is the count itself,
+                        as per how `toSortedMap` stores leaf nodes (subject counts).
+                        So, the item from getSortedEntries is { name: subjectText, count: subjectCount, children: subjectCountVal }
+                        We use `name` for subject text and `count` for its count.
+                    */}
+                    {subjectsMap.getSortedEntries().map(({ name: subject, count: subjectCount }, idx) => (
+                      <li key={idx} className="text-sm text-gray-700 flex items-start"> {/* Using idx as key for subjects */}
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 mt-1 flex-shrink-0 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                        {subject} <span className="text-xs font-semibold text-gray-500 ml-1">({subjectCount})</span>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    );
+  }
+};
 
-  return (
-    <div className="space-y-4">
-      {Object.entries(treeData)
-        .sort(([, domainDataA], [, domainDataB]) => domainDataB.count - domainDataA.count) // Sort domains by count
-        .map(([domain, domainData]) => (
-        <div key={domain} className="border border-purple-300 rounded-lg p-4 bg-purple-50 shadow-sm">
-          <h3 className="text-lg font-semibold text-purple-800 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-600" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-.464 5.535a1 1 0 10-1.414-1.414L9 10.586l-1.121 1.121a1 1 0 101.414 1.414L9 12.414l1.121 1.121z" clipRule="evenodd" />
-            </svg>
-            Domain: <span className="font-normal ml-1">{domain}</span> <span className="text-sm font-bold bg-purple-200 text-purple-800 px-2 rounded-full ml-2">{domainData.count}</span>
-          </h3>
-          <ul className="pl-6 mt-2 space-y-3">
-            {Object.entries(domainData.senders)
-              .sort(([, senderDataA], [, senderDataB]) => senderDataB.count - senderDataA.count) // Sort senders by count
-              .map(([sender, senderData]) => (
-              <li key={sender} className="border-l-2 border-purple-200 pl-4 py-1">
-                <p className="text-md font-medium text-purple-700 flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-purple-500" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zm-6 6a3 3 0 100 6h6a3 3 0 100-6H7z" />
-                  </svg>
-                  Sender: <span className="font-normal ml-1">{sender}</span> <span className="text-xs font-bold bg-purple-100 text-purple-700 px-2 rounded-full ml-2">{senderData.count}</span>
-                </p>
-                <ul className="pl-6 mt-1 space-y-1">
-                  {Object.entries(senderData.subjects)
-                    .sort(([, subjectCountA], [, subjectCountB]) => subjectCountB - subjectCountA) // Sort subjects by count
-                    .map(([subject, subjectCount], idx) => (
-                    <li key={idx} className="text-sm text-gray-700 flex items-start">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 mt-1 flex-shrink-0 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-                      </svg>
-                      {subject} <span className="text-xs font-semibold text-gray-500 ml-1">({subjectCount})</span>
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
-  );
+// At the top level of App component or right before it
+const isMockDataMode = () => {
+  return sessionStorage.getItem('useMockData') === 'true';
 };
 
 // Main App component
 const App = () => {
-  // State to hold the mock email data
-  const [emails, setEmails] = useState([]);
+  // State to hold the email data (can be array for mock, or SortedArrayMap for DB)
+  const [emails, setEmails] = useState(isMockDataMode() ? [] : null);
+  const [frequentContacts, setFrequentContacts] = useState([]);
   // State to manage loading status
   const [loading, setLoading] = useState(true);
   // State to manage potential errors
   const [error, setError] = useState(null);
 
-  // Simulate fetching email data
+  // Feature flag useEffect (should already be present from previous step)
   useEffect(() => {
-    const fetchMockEmails = () => {
-      setLoading(true);
-      setError(null);
+    const queryParams = new URLSearchParams(window.location.search);
+    if (queryParams.has('useMockData')) {
+      if (queryParams.get('useMockData') === 'true') {
+        sessionStorage.setItem('useMockData', 'true');
+      } else {
+        sessionStorage.removeItem('useMockData');
+      }
+    }
+    // If mode changes via URL, a page reload would typically occur, re-triggering this.
+    // For more dynamic updates without reload, this effect could trigger data refetch.
+  }, []);
 
-      // Generate 200+ mock emails
-      const mockData = generateMockEmails(250); // Increased to 250 sample emails
 
-      // Simulate network delay
+  // Data fetching useEffect
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+
+    if (isMockDataMode()) {
+      console.log("Fetching mock data...");
+      const mockDataArray = generateMockEmails(250);
+      // Simulate network delay for mock data too for consistency
       setTimeout(() => {
         try {
-          setEmails(mockData);
+          setEmails(mockDataArray); // For mock mode, emails is an array
+          // Calculate frequent contacts for mock data using the component's local function
+          const mockFrequentContacts = getMostFrequentContactsLocal(mockDataArray);
+          setFrequentContacts(mockFrequentContacts);
           setLoading(false);
         } catch (err) {
-          setError('Failed to load email data.');
+          console.error("Error processing mock data:", err);
+          setError('Failed to load mock email data.');
+          setEmails([]);
+          setFrequentContacts([]);
           setLoading(false);
         }
-      }, 1500); // Simulate 1.5 seconds loading time
-    };
+      }, 1500);
+    } else {
+      console.log("Fetching data from database...");
+      Promise.all([generateStats(), getMostFrequentContactsFromDb()])
+        .then(([treeDataFromDb, contactsFromDb]) => {
+          setEmails(treeDataFromDb); // This will be a SortedArrayMap instance
+          setFrequentContacts(contactsFromDb);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error("Error fetching data from DB:", err);
+          setError('Failed to load email data from database.');
+          setEmails(null); // Or an empty SortedArrayMap equivalent
+          setFrequentContacts([]);
+          setLoading(false);
+        });
+    }
+    // This effect runs once on mount. Behavior upon mode change (via URL param)
+    // typically involves a page reload by the user.
+  }, []);
 
-    fetchMockEmails();
-  }, []); // Empty dependency array ensures this runs once on mount
-
-  // Function to calculate most frequent contacts
-  const getMostFrequentContacts = (emailList) => {
+  // This local function is ONLY for mock data. Renamed to avoid confusion.
+  const getMostFrequentContactsLocal = (emailList) => {
+    // Guard against non-array or empty array early
+    if (!Array.isArray(emailList) || emailList.length === 0) return [];
     const contactCounts = {};
     emailList.forEach(email => {
-      // For simplicity, consider 'from' addresses as contacts
       contactCounts[email.from] = (contactCounts[email.from] || 0) + 1;
     });
-
-    // Convert to array and sort by count in descending order
-    const sortedContacts = Object.entries(contactCounts).sort(([, countA], [, countB]) => countB - countA);
-
-    // Return top 3 contacts
-    return sortedContacts.slice(0, 5); // Return top 5 for more variety
+    const sortedContactsArr = Object.entries(contactCounts).sort(([, countA], [, countB]) => countB - countA);
+    return sortedContactsArr.slice(0, 5);
   };
 
-  const frequentContacts = getMostFrequentContacts(emails);
+  // frequentContacts state is now set within the useEffect hook.
+  // The old: const frequentContacts = getMostFrequentContacts(emails); is removed.
+
+  // Calculate total emails count for the "Emails Analyzed" card
+  let totalEmailsCount = 0;
+  if (!loading && !error && emails) {
+    if (isMockDataMode()) {
+      totalEmailsCount = emails.length;
+    } else { // Dexie mode, emails is a SortedArrayMap
+      if (typeof emails.getSortedEntries === 'function') {
+        emails.getSortedEntries().forEach(({ count }) => { // count here is domainCount from the top level (domains)
+          totalEmailsCount += count;
+        });
+      } else {
+        console.warn("Emails object in Dexie mode does not have getSortedEntries method or is not as expected.", emails);
+      }
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 font-inter">
@@ -198,7 +307,7 @@ const App = () => {
                   </svg>
                   Emails Analyzed
                 </h2>
-                <p className="text-5xl font-bold text-blue-900">{emails.length}</p>
+                <p className="text-5xl font-bold text-blue-900">{totalEmailsCount}</p>
                 <p className="text-gray-600 mt-2">Total number of email metadata processed.</p>
               </div>
 
