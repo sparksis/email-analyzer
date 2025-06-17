@@ -380,4 +380,6 @@ export async function fetchMessages(
     }
 }
 // Exported variables and functions
+// Ensuring a canonical export block. initClient is defined above without an inline export.
+// Adding initClient back.
 export { initClient, login, logout, fetchMessages, Message };
