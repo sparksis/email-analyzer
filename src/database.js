@@ -39,8 +39,8 @@ class SortedArrayMap {
 
 export const db = new Dexie('EmailDB');
 
-db.version(1).stores({
-    messages: 'id, to, domain, from, subject, [to+domain+from], [domain+from+subject]', // Added subject and new compound index
+db.version(2).stores({ // Version incremented to 2
+    messages: 'id, to, domain, from, subject, [to+domain+from], [domain+from+subject]',
 });
 
 export const Messages = db.messages;
