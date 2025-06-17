@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import App from './EmailAnalyzer';
 import reportWebVitals from './reportWebVitals';
 
 import { pink, lightGreen, blue, grey } from '@mui/material/colors';
