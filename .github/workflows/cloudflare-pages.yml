@@ -54,7 +54,7 @@ jobs:
       deployments: write # Required for Cloudflare Pages deployment
     environment:
       name: cloudflare
-      url: ${{steps.deploy.outputs.deployment-url}} # Wrangler action provides this output
+      url: ${{steps.deploy.outputs.pages-deployment-alias-url}} # Wrangler action provides this output
     name: Publish to Cloudflare Pages # Job name
     steps:
       - name: Download Pages artifact
