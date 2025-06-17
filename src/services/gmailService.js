@@ -152,6 +152,7 @@ async function logout() {
  */
 function extractInternetAddress(address) {
     if (!address) return '';
+    // eslint-disable-next-line no-useless-escape
     const matches = address.match(/.*\<(.*)\>$/);
     const internetAddress = (matches && matches[1]) || address;
     return internetAddress.toLowerCase();
