@@ -54,9 +54,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: pages-build
-          # By default, downloads to the current working directory.
-          # If the artifact 'pages-build' contained the 'build/' folder,
-          # it will create a 'build/' folder in the workspace.
+          path: build/ # Download the artifact to 'build/' directory
       - name: Publish to Cloudflare Pages
         id: deploy # Step ID for environment URL output
         uses: cloudflare/wrangler-action@7a5f8bbdfeedcde38e6777a50fe685f89259d4ca
