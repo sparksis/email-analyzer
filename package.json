@@ -6,7 +6,7 @@
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.14.0",
-    "@fontsource/cascadia-code": "^4.2.1",
+    "@fontsource/cascadia-code": "^5.2.2",
     "@fontsource/roboto": "^5.2.6",
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.0",
