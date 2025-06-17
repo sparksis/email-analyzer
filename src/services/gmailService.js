@@ -67,7 +67,7 @@ async function createTokenClient() {
  * @throws {Error} Propagates errors from `createTokenClient` if initialization fails.
  * @returns {Promise<void>} A promise that resolves when the client is initialized.
  */
-export async function initClient() {
+async function initClient() {
     if (!tokenClient) {
         try {
             tokenClient = await createTokenClient();
@@ -88,7 +88,7 @@ export async function initClient() {
  * @returns {Promise<void>} A promise that resolves when the login attempt is made. Errors within callbacks are logged.
  * @throws {Error} If `initClient` fails when called as a fallback. Token acquisition errors are caught and logged.
  */
-export async function login(callback = () => {}) {
+async function login(callback = () => {}) {
   if (!tokenClient) {
     console.warn('Token client not initialized, attempting to initialize now.');
     await initClient();
@@ -120,7 +120,7 @@ export async function login(callback = () => {}) {
  * @returns {Promise<void>} A promise that resolves when logout is complete.
  * @throws {Error} If `google.accounts.oauth2.revoke` fails.
  */
-export async function logout() {
+async function logout() {
   const currentToken = gapi.client.getToken();
   if (currentToken !== null) {
     await new Promise((resolve, reject) => {
@@ -211,7 +211,7 @@ class Headers {
  * Represents an email message with processed header information,
  * tailored for the application's needs.
  */
-export class Message {
+class Message {
     /** Unique ID of the message. @type {string} */
     id;
     /** A short snippet of the message content. @type {string} */
@@ -274,7 +274,7 @@ export class Message {
  * @param {number} [retryCount=0] - Used internally to track retry attempts for error handling.
  * @returns {Promise<void>} A promise that resolves when all messages are fetched and processed, or an error occurs.
  */
-export async function fetchMessages(
+async function fetchMessages(
     processMessagesCallback,
     setFetchStatusCallback = (statusText) => { console.log("Fetch Status:", statusText); },
     nextPageToken,
