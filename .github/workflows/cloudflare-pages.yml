@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: github-pages # TODO migrate to cloudflare
     permissions:
       contents: read # Needed for checkout and potentially build scripts
       # No deployment permissions needed for build job
