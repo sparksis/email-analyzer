@@ -1,0 +1,45 @@
+name: Create Pull Request
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  create_pr:
+    runs-on: ubuntu-latest
+    if: github.event.head_commit.author.username == 'google-labs-jules[bot]'
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get branch name
+        id: branch-name
+        run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}} | sed 's/[^a-zA-Z0-9_.-]/-/g')" >> $GITHUB_ENV
+
+      - name: Check for existing PR
+        id: check_pr
+        run: |
+          PR_EXISTS_FILE="pr-exists-for-${{ env.BRANCH_NAME }}.txt"
+          gh pr list --head "${{ env.BRANCH_NAME }}" --json number --jq '.[0].number // ""' > "$PR_EXISTS_FILE"
+          echo "PR_EXISTS_FILE=$PR_EXISTS_FILE" >> $GITHUB_ENV
+          echo "PR_NUMBER=$(cat $PR_EXISTS_FILE)" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Create PR if none exists
+        run: |
+          PR_EXISTS_FILE="${{ env.PR_EXISTS_FILE }}"
+          if [ -z "${{ env.PR_NUMBER }}" ]; then
+            DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name)
+            gh pr create --draft --base "$DEFAULT_BRANCH" --title "PR for ${{ env.BRANCH_NAME }}" --body "Automated PR created for changes in ${{ env.BRANCH_NAME }}"
+            echo "Created new draft PR for branch ${{ env.BRANCH_NAME }} against $DEFAULT_BRANCH"
+          else
+            echo "PR number ${{ env.PR_NUMBER }} already exists for branch ${{ env.BRANCH_NAME }}"
+          fi
+          rm -f "$PR_EXISTS_FILE"
+        shell: bash
