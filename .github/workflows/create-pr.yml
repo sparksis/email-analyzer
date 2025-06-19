@@ -2,8 +2,6 @@ name: Create Pull Request
 
 on:
   push:
-    branches:
-      - '*'
 
 jobs:
   create_pr:
@@ -36,7 +34,7 @@ jobs:
           PR_EXISTS_FILE="${{ env.PR_EXISTS_FILE }}"
           if [ -z "${{ env.PR_NUMBER }}" ]; then
             DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name)
-            gh pr create --draft --base "$DEFAULT_BRANCH" --title "PR for ${{ env.BRANCH_NAME }}" --body "Automated PR created for changes in ${{ env.BRANCH_NAME }}"
+            gh pr create --draft --base "$DEFAULT_BRANCH" --title "PR for ${{ env.BRANCH_NAME }}" --body "Automated PR created for changes in ${{ env.BRANCH_NAME }}" --label 'google-labs-jules[bot]'
             echo "Created new draft PR for branch ${{ env.BRANCH_NAME }} against $DEFAULT_BRANCH"
           else
             echo "PR number ${{ env.PR_NUMBER }} already exists for branch ${{ env.BRANCH_NAME }}"
