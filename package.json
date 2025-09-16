@@ -57,7 +57,7 @@
     "@faker-js/faker": "^9.2.0",
     "@storybook/addon-actions": "^6.5.9",
     "@storybook/addon-essentials": "^6.5.9",
-    "@storybook/addon-links": "^6.5.9",
+    "@storybook/addon-links": "^9.1.6",
     "@storybook/react": "^6.5.9"
   }
 }
