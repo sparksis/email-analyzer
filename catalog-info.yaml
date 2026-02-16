@@ -2,7 +2,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: email-analyzer
-  description: "This project is a Create React App web application designed to help users analyze their Gmail account activity by fetching email metadata, storing it locally in the browser, and generating insights about email habits, frequent contacts, and email volume, all while prioritizing data privacy and security."
+  description: "This project is a web application, bootstrapped with Create React App, designed to help users analyze their Gmail account activity by fetching email metadata to generate insights about email habits, frequent contacts, and email volume, all while prioritizing data privacy and security."
   annotations:
     github.com/project-slug: sparksis/email-analyzer
 spec:
